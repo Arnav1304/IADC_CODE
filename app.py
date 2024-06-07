@@ -5,34 +5,31 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
-# Load the trained model and TF-IDF vectorizer
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def load_model():
-    model = joblib.load('iadc_code_model.pkl')
-    vectorizer = joblib.load('tfidf_vectorizer.pkl')
+    try:
+        model = joblib.load('iadc_code_model.pkl')
+        vectorizer = joblib.load('tfidf_vectorizer.pkl')
+    except Exception as e:
+        st.error(f"Error loading model or vectorizer: {e}")
+        return None, None
     return model, vectorizer
 
 model, vectorizer = load_model()
 
-# Define the Streamlit app
+if model is None or vectorizer is None:
+    st.stop()
+
 def main():
     st.title('IADC Code Predictor')
-    
-    # Text input for description
+    st.write("This app predicts the IADC code based on the provided descriptions.")
+
     description = st.text_input('Enter the description:')
-    
+
     if st.button('Predict'):
         if description:
-            # Preprocess the input text
-            text = description.lower()
-            
-            # Vectorize the text
-            text_vectorized = vectorizer.transform([text])
-            
-            # Make prediction
+            text_vectorized = vectorizer.transform([description])
             prediction = model.predict(text_vectorized)
-            
-            # Display prediction
             st.write('Predicted IADC Code:', prediction[0])
         else:
             st.write('Please enter a description.')
