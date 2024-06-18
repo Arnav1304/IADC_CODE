@@ -5,7 +5,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
+import os
 
+# Function to load data
 @st.cache_data
 def load_data(file_path):
     try:
@@ -15,6 +17,7 @@ def load_data(file_path):
         st.error(f"Error loading data: {e}")
         return None
 
+# Function to train model
 @st.cache_data
 def train_model(data):
     # Column names based on the provided structure
@@ -53,11 +56,6 @@ def train_model(data):
     joblib.dump(best_model, 'best_model.joblib')
     joblib.dump(vectorizer, 'vectorizer.joblib')
 
-    # Evaluate the best model
-    y_pred = best_model.predict(X_test_tfidf)
-    accuracy = accuracy_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
-
     return best_model, vectorizer
 
 # Streamlit App
@@ -66,7 +64,7 @@ def main():
     st.write("Enter a comment to predict the IADC code")
 
     # Load the dataset
-    file_path = r'C:\Users\KIIT\Desktop\AI\DPR.csv'
+    file_path = 'DPR.csv'  # Adjust path as needed
     data = load_data(file_path)
     if data is not None:
         # Train the model
