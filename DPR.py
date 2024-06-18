@@ -64,7 +64,7 @@ def main():
     st.write("Enter a comment to predict the IADC code")
 
     # Load the dataset
-    file_path = "C:\Users\KIIT\Desktop\AI\DPR.csv"  # Adjust path as needed
+    file_path = r'C:\Users\KIIT\Desktop\AI\DPR.csv'  # Use raw string to avoid unicode escape issues
     data = load_data(file_path)
     if data is not None:
         # Train the model
